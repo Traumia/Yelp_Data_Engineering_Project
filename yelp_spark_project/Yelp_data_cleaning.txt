@@ -1,0 +1,210 @@
+
+
+kaggle datasets download -d yelp-dataset/yelp-dataset
+
+++++++++++++++++++++++++++++ how to install kaggle API+++++++++++++++++++++++++++++++++++
+
+https://github.com/Kaggle/kaggle-api
+
+++++++++++++++++++++++++++++unzip file+++++++++++++++++++++++++++++++++++
+
+unzip yelp-dataset.zip 
+
+++++++++++++++++++++++++++++upload to hdfs+++++++++++++++++++++++++++++++++++
+
+hdfs dfs -mkdir /user/lpy/yelp_data/
+
+hdfs dfs -put yelp_academic_dataset* /user/lpy/yelp_data/
+
+++++++++++++++++++++++++++++display the folder structure+++++++++++++++++++++++++++++++\
+
+hadoop fs -ls
+
+hdfs dfs -ls /user/lyh/tb
+
+hdfs dfs -ls /user/lyh/yelp_data/ 
+
+
++++++++++++++++++++++++++++++ pyspark JSON processing+++++++++++++++++++++++++++++++++
+
+pyspark
+
+//spark.read.option("header",True).csv("/user/lyh/yelp_data/retailstore.csv").show()
+
+from pyspark.sql.functions import col, sum
+
+############################################################################################################
+
+// 1.we first process the business dataset
+
+tbl_business = spark.read.option("header",True).json("/user/lyh/yelp_data/yelp_academic_dataset_business.json")
+
+tbl_business.show(10)
+
+tbl_business.printSchema()
+
+tbl_business.select([sum(col(c).isNull().cast("int")).alias(c) for c in tbl_business.columns]).show()
+
+tbl_business.count() - tbl_business.dropDuplicates().count()
+
+
+#drop the whole column of attributes
+tbl_business1 = tbl_business.drop('attributes')
+
+#drop null values in categories
+tbl_business2 = tbl_business1.na.drop(subset=['categories'])
+
+# If the star attribute is null, fill it with the mean value of the column
+from pyspark.sql.functions import mean
+
+mean_star_val = tbl_business2.select(mean(tbl_business2['stars'])).collect() 
+
+mean_star=mean_star_val[0][0] #3.5976817555559992
+
+tbl_business3 = tbl_business2.na.fill(mean_star,["stars"])
+
+# Check if there still exist some null values in tbl_business3
+tbl_business3.select([sum(col(c).isNull().cast("int")).alias(c) for c in tbl_business3.columns]).show()
+
+#CSV data source does not support the struct data type that is present in the DataFrame tbl_business3
+tbl_business3.write.format("csv").save("/user/lyh/yelp_data/data_business")
+
+tbl_business3.repartition(1).write.format("json").save("/user/lyh/yelp_data/data_business_json")
+
+tbl_business3.write.parquet("/user/lyh/yelp_data/data_business_parquet")
+
+############################################################################################################
+
+
+# 2.process the checking dataset
+
+tbl_checkin = spark.read.option("header",True).json("/user/lyh/yelp_data/yelp_academic_dataset_checkin.json")
+
+tbl_checkin.show(10)
+
+tbl_checkin.printSchema()
+
+tbl_checkin.select([sum(col(c).isNull().cast("int")).alias(c) for c in tbl_checkin.columns]).show() # No missing Value
+
+tbl_checkin.count() - tbl_checkin.dropDuplicates().count()
+
+#################################### Here we want to change the datatype of column 'date' to date datatype.
+
+from pyspark.sql.functions import to_date, col
+
+tbl_checkin1 = tbl_checkin.withColumn("date",col("date").cast(DateType)) # Causing Error
+
+tbl_checkin1 = tbl_checkin.withColumn("date", to_date("date", "yyyy-MM-dd HH:mm:ss"))# causing Error
+
+########################################################################
+
+# Split datetime string into "Date" and "Time" columns
+
+from pyspark.sql.functions import split
+
+# split date into two columns
+tbl_checkin1 = tbl_checkin.withColumn('date', split(tbl_checkin['date'], ' '))
+
+# create a new column for time
+tbl_checkin1 = tbl_checkin1.withColumn('time', tbl_checkin1['date'].getItem(1))
+
+# create a new column for date
+tbl_checkin1 = tbl_checkin1.withColumn('date', tbl_checkin1['date'].getItem(0))
+
+
+from pyspark.sql.functions import regexp_replace
+
+tbl_checkin1 = tbl_checkin1.withColumn("time", regexp_replace("time", ",", ""))
+
+tbl_checkin1.show(10)
+
+tbl_checkin1.write.format("csv").save("/user/lyh/yelp_data/data_checkin")
+
+
+############################################################################################################
+
+
+# 3.process the review dataset, this table contains the checking time of the customer for specific business_id
+
+tbl_review = spark.read.option("header",True).json("/user/lyh/yelp_data/yelp_academic_dataset_review.json")
+
+tbl_review.show(10)
+
+tbl_review.printSchema()
+
+from pyspark.sql.functions import sum, col
+
+tbl_review.select([sum(col(c).isNull().cast("int")).alias(c) for c in tbl_review.columns]).show() # No missing Value
+
+tbl_review.count() - tbl_review.dropDuplicates().count()
+
+tbl_review.write.format("csv").save("/user/lyh/yelp_data/data_review")
+
+
+############################################################################################################
+
+
+
+# 4.process the tip dataset
+
+tbl_tip = spark.read.option("header",True).json("/user/lyh/yelp_data/yelp_academic_dataset_tip.json")
+
+tbl_tip.show(10)
+
+tbl_tip.printSchema()
+
+from pyspark.sql.functions import sum, col
+
+tbl_tip.select([sum(col(c).isNull().cast("int")).alias(c) for c in tbl_tip.columns]).show() # No missing Value
+
+tbl_tip.count() - tbl_tip.dropDuplicates().count()
+
+tbl_tip1 = tbl_tip.dropDuplicates()
+
+tbl_tip1.write.format("csv").save("/user/lyh/yelp_data/data_tip")
+
+
+############################################################################################################
+
+
+//process the user dataset
+
+tbl_user = spark.read.option("header",True).json("/user/lyh/yelp_data/yelp_academic_dataset_user.json")
+
+tbl_user.show(10)
+
+tbl_user.printSchema()
+
+from pyspark.sql.functions import sum, col
+
+tbl_user.select([sum(col(c).isNull().cast("int")).alias(c) for c in tbl_user.columns]).show() # No missing Value
+
+tbl_user.count() - tbl_user.dropDuplicates().count() # No duplicate
+
+tbl_user.write.format("csv").save("/user/lyh/yelp_data/data_user")
+
+
+
+############################################################################################################
+
+
++++++++++++++++++++++++++++++ Loading it to Hive+++++++++++++++++++++++++++++++++
+
+hive
+
+create database if not exists yelp_database;
+
+use yelp_database;
+
+# Dailed because "time" is a reserved keyword in Hive, 
+create table data_checkin_cleaned (business_id String, date string, time string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION '/user/lyh/yelp_data/data_checkin' ;
+
+CREATE TABLE data_checkin_cleaned (business_id STRING, checkin_date STRING, checkin_time STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ','LOCATION '/user/lyh/yelp_data/data_checkin';
+
+show tables;
+
+select * from data_checkin_cleaned LIMIT 20;
+
+......
+
+
