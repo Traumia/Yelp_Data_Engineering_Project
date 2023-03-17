@@ -20,11 +20,11 @@ Parquet
 
 ## Key Practices
 
-Data Extraction: Utilizing the Kaggle API, the Yelp Dataset is downloaded to the DataProc Master node. The dataset is over 8GB in size after unzipping.<br>  
-Data Transformation: The unzipped data is uploaded to the Hadoop File System (HDFS). Pyspark is used to clean and transform the dataset, and the resulting data is loaded into HIVE tables in Hadoop.<br>
-Exploratory Data Analysis (EDA): EDA is performed using Pyspark and Pandas to find the top 10 popular restaurants in Philadelphia.<br>
-Creating Data Layer: Five tables are de-normalized, processing more than 320 million records. The data is saved in Parquet format in Google Cloud Storage and loaded into BigQuery. The DataProc cluster is directly connected to Google Cloud Storage, which is used as a Data Lake.<br>
-Machine Learning: (TODO) Perform machine learning using BigQuery ML for further analysis and insights.<br>
+Data Extraction: Utilizing the Kaggle API, the Yelp Dataset is downloaded to the DataProc Master node. The dataset is over 8GB after unzipping <br>  
+Data Transformation: The unzipped data is uploaded to the Hadoop File System (HDFS). Pyspark is used to clean and transform the dataset, and the resulting data is loaded into HIVE tables in Hadoop <br>
+Exploratory Data Analysis (EDA): EDA is performed using Pyspark and Pandas to find the top 10 popular restaurants in Philadelphia <br>
+Creating Data Layer: Five tables are de-normalized, processing more than 320 million records. The data is saved in Parquet format in Google Cloud Storage and loaded into BigQuery. The DataProc cluster is directly connected to Google Cloud Storage, which is used as a Data Lake <br>
+Machine Learning: (TODO) Perform machine learning using BigQuery ML for further analysis and insights <br>
 
 ## Getting Started
 
