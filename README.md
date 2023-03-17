@@ -28,10 +28,10 @@ The project also involves creating a data layer for further analysis and machine
 ## Getting Started
 
 ### Prerequisites
-Google Cloud Platform (GCP) account with billing enabled <br>
-Kaggle account and API key <br>
-Python 3.6 or higher <br>
-Pyspark and Hadoop libraries installed <br>
+* Google Cloud Platform (GCP) account with billing enabled <br>
+* Kaggle account and API key <br>
+* Python 3.6 or higher <br>
+* Pyspark and Hadoop libraries installed <br>
 
 ### Setup
 * Set up a Google Cloud Platform project and enable the necessary APIs (BigQuery, DataProc, Cloud Storage).
@@ -43,11 +43,11 @@ Pyspark and Hadoop libraries installed <br>
 * De-normalize the tables, save the data as Parquet files in Google Cloud Storage, and load the data into BigQuery.
 * (TODO) Use BigQuery ML to perform machine learning and gain further insights.
 
-### Contributing
+## Contributing
 
 Yueheng Li and Instructor Pengyuan Li
 
-### Acknowledgements
+## Acknowledgements
 
 Yelp Dataset provided by Yelp Dataset Challenge on Kaggle. 
 Google Cloud Platform for providing the infrastructure and tools. 
