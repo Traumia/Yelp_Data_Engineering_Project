@@ -1,31 +1,53 @@
-# DE_Project
+# Data Engineer Project - Yelp Dataset Analysis
 
-This is Data Engineer Project involves many topics and technologys:
+This project focuses on processing and analyzing the Yelp Dataset using various data engineering tools and technologies. It covers data extraction, transformation, loading, and exploratory data analysis to find the top 10 popular restaurants in Philadelphia. The project also involves creating a data layer for further analysis and machine learning using BigQuery ML.
 
-keyworks: Hadoop, HIVE, Spark, GCP, BigQuery, CloudStorage, DataProc, Python, SQL, Pandas, Parquet
+## Technologies and Tools
 
-Key Practices In This project:
+Hadoop
+HIVE
+Spark
+Google Cloud Platform (GCP)
+BigQuery
+Google Cloud Storage
+DataProc
+Python
+SQL
+Pandas
+Parquet
 
-Data Extraction: Using Kaggle API to download the Yelp Dataset to DataProc Master node. (>8GB after unzip)
-Data Transformation: Upload the unzipped data to Hadoop File System; Used pyspark to clean the transform the dataset, then load into HIVE tables in Hadoop.
-Performed Exploratory Data Analysis with Pyspark and Pandas, found the best 10 popular restaurants in Philadelphia.
-Created DataLayer, by de-normalizing the 5 tables ( processed >320 million records); saved the data as Parquet format in CloudStorage and loaded into BigQuery. (Connected Dataproc cluster to CloudStorage directly, used CloudStorage as DataLake)
-.TODO ..perform ML using BigQuery ML.
+## Key Practices
 
-## Table of Contents
+Data Extraction: Utilizing the Kaggle API, the Yelp Dataset is downloaded to the DataProc Master node. The dataset is over 8GB in size after unzipping.
+Data Transformation: The unzipped data is uploaded to the Hadoop File System (HDFS). Pyspark is used to clean and transform the dataset, and the resulting data is loaded into HIVE tables in Hadoop.
+Exploratory Data Analysis (EDA): EDA is performed using Pyspark and Pandas to find the top 10 popular restaurants in Philadelphia.
+Creating Data Layer: Five tables are de-normalized, processing more than 320 million records. The data is saved in Parquet format in Google Cloud Storage and loaded into BigQuery. The DataProc cluster is directly connected to Google Cloud Storage, which is used as a Data Lake.
+Machine Learning: (TODO) Perform machine learning using BigQuery ML for further analysis and insights.
+Getting Started
 
-* Spark_Hello_World
-* data_cleaning_project_demo
-* yelp_spark_project
+## Prerequisites
+Google Cloud Platform (GCP) account with billing enabled
+Kaggle account and API key
+Python 3.6 or higher
+Pyspark and Hadoop libraries installed
 
-## Installation
-
-Instructions on how to install your project and its dependencies.
-
-## Usage
-
-Clone the repository: `git clone https://github.com/Traumia/DE_Project.git`
+## Setup
+Set up a Google Cloud Platform project and enable the necessary APIs (BigQuery, DataProc, Cloud Storage).
+Create a DataProc cluster with Hadoop, HIVE, and Spark installed.
+Download the Yelp Dataset using the Kaggle API and upload it to the DataProc Master node.
+Unzip the dataset and upload the files to HDFS.
+Run the provided Pyspark scripts to clean, transform, and load the data into HIVE tables.
+Perform EDA with Pyspark and Pandas to find the top 10 popular restaurants in Philadelphia.
+De-normalize the tables, save the data as Parquet files in Google Cloud Storage, and load the data into BigQuery.
+(TODO) Use BigQuery ML to perform machine learning and gain further insights.
 
 ## Contributing
 
 Yueheng Li and Instructor Pengyuan Li
+
+## Acknowledgements
+
+Yelp Dataset provided by Yelp Dataset Challenge on Kaggle
+Google Cloud Platform for providing the infrastructure and tools
+The Pyspark, Pandas, and Hadoop communities for their open-source contributions
+
