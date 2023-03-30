@@ -1,4 +1,4 @@
-# Data Engineer Project - Yelp Dataset Analysis
+# Yelp Dataset Analysis
 
 * This project focuses on processing and analyzing the Yelp Dataset using various data engineering tools and technologies.<br>
 * It covers data extraction, transformation, loading, and exploratory data analysis to find the top 10 popular restaurants in Philadelphia.<br>
